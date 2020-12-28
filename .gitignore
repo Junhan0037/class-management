@@ -36,3 +36,7 @@ build/
 application-dev.properties
 application-real.properties
 application-test.properties
+
+### sql ###
+schema-h2.sql
+schema-mariadb.sql

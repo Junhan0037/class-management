@@ -12,7 +12,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
+
+import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
@@ -21,10 +23,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AccountService accountService;
     private final PasswordEncoder passwordEncoder;
+    private final DataSource dataSource;
 
     @Bean
     public TokenStore tokenStore() {
-        return new InMemoryTokenStore();
+        return new JdbcTokenStore(dataSource);
     }
 
     @Bean
@@ -43,16 +46,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().mvcMatchers("/docs/index.html");
         web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations()); // StaticResource 예외처리
     }
-
-    /* ResourceServerConfig에서 설정
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .mvcMatchers(HttpMethod.GET, "/api/**").authenticated()
-                .anyRequest().authenticated();
-        http.formLogin();
-        http.httpBasic();
-    }
-     */
 
 }

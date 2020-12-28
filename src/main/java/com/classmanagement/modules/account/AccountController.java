@@ -5,12 +5,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -33,6 +31,13 @@ public class AccountController {
         }
         Account account = modelMapper.map(accountDto, Account.class);
         return accountService.saveAccount(account);
+    }
+
+    @ResponseBody
+    @GetMapping("/api/accounts")
+    public List<Account> test() {
+        List<Account> accounts = accountService.showAccount();
+        return accounts;
     }
 
 }

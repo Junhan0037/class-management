@@ -5,12 +5,13 @@ import com.classmanagement.modules.main.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 @Entity
 @Getter @Setter
 @Builder @AllArgsConstructor @NoArgsConstructor
-public class Account extends BaseTimeEntity {
+public class Account extends BaseTimeEntity implements Serializable {
 
     @Id @GeneratedValue
     private Long id;
