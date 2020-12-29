@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
 import javax.sql.DataSource;
 
@@ -28,6 +29,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     private final AccountService accountService;
     private final AppProperties appProperties;
     private final DataSource dataSource;
+    private final JwtAccessTokenConverter jwtAccessTokenConverter;
     private final TokenStore tokenStore;
 
     @Bean
@@ -42,19 +44,28 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.jdbc(dataSource)
+        clients.inMemory()
                 .withClient(appProperties.getClientId())
                 .secret(passwordEncoder.encode(appProperties.getClientSecret()))
                 .authorizedGrantTypes("password", "refresh_token")
                 .scopes("read", "write")
-                .accessTokenValiditySeconds(10 * 60)
-                .refreshTokenValiditySeconds(6 * 10 * 60);
+                .accessTokenValiditySeconds(24 * 60 * 60)
+                .refreshTokenValiditySeconds(30 * 24 * 60 * 60);
+
+//        clients.jdbc(dataSource)
+//                .withClient(appProperties.getClientId())
+//                .secret(passwordEncoder.encode(appProperties.getClientSecret()))
+//                .authorizedGrantTypes("password", "refresh_token")
+//                .scopes("read", "write")
+//                .accessTokenValiditySeconds(10 * 60)
+//                .refreshTokenValiditySeconds(6 * 10 * 60);
     }
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints.authenticationManager(authenticationManager)
                 .userDetailsService(accountService)
+                .accessTokenConverter(jwtAccessTokenConverter)
                 .tokenStore(tokenStore);
     }
 
