@@ -87,6 +87,8 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("name").description("Name of new account"),
                                 fieldWithPath("role").description("Role of new account"),
                                 fieldWithPath("classroom").description("Classroom of new account"),
+                                fieldWithPath("authorizationID").description("Id of Authorization"),
+                                fieldWithPath("authorizationPW").description("Password of Authorization"),
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.create-account.href").description("link to query-accounts"),
                                 fieldWithPath("_links.profile.href").description("link to profile")
@@ -187,7 +189,7 @@ class AccountControllerTest extends BaseTest {
                                 headerWithName(HttpHeaders.LOCATION).description("location header"),
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
                         ),
-                        relaxedResponseFields(
+                        responseFields(
                                 fieldWithPath("_embedded.accountList[0].createdDate").description("CreatedDate of new account"),
                                 fieldWithPath("_embedded.accountList[0].lastModifiedDate").description("LastModifiedDate of new account"),
                                 fieldWithPath("_embedded.accountList[0].id").description("Id of new account"),
@@ -196,6 +198,8 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("_embedded.accountList[0].name").description("Name of new account"),
                                 fieldWithPath("_embedded.accountList[0].role").description("Role of new account"),
                                 fieldWithPath("_embedded.accountList[0].classroom").description("Classroom of new account"),
+                                fieldWithPath("_embedded.accountList[0].authorizationID").description("Id of Authorization"),
+                                fieldWithPath("_embedded.accountList[0].authorizationPW").description("Password of Authorization"),
                                 fieldWithPath("_embedded.accountList[0]._links.self.href").description("link to self"),
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.query-accounts.href").description("link to query-accounts"),
@@ -251,6 +255,8 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("name").description("Name of new account"),
                                 fieldWithPath("role").description("Role of new account"),
                                 fieldWithPath("classroom").description("Classroom of new account"),
+                                fieldWithPath("authorizationID").description("Id of Authorization"),
+                                fieldWithPath("authorizationPW").description("Password of Authorization"),
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.query-account.href").description("link to query-account"),
                                 fieldWithPath("_links.profile.href").description("link to profile")
@@ -347,6 +353,8 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("name").description("Name of new account"),
                                 fieldWithPath("role").description("Role of new account"),
                                 fieldWithPath("classroom").description("Classroom of new account"),
+                                fieldWithPath("authorizationID").description("Id of Authorization"),
+                                fieldWithPath("authorizationPW").description("Password of Authorization"),
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.update-account.href").description("link to update-account"),
                                 fieldWithPath("_links.profile.href").description("link to profile")

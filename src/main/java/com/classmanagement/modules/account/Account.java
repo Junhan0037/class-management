@@ -7,8 +7,8 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Getter @Setter
-@Builder @AllArgsConstructor @NoArgsConstructor
+@Getter @Setter @Builder
+@AllArgsConstructor @NoArgsConstructor
 public class Account extends BaseTimeEntity {
 
     @Id @GeneratedValue
@@ -26,6 +26,9 @@ public class Account extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Classroom classroom;
+
+    private String AuthorizationID;
+    private String AuthorizationPW;
 
     public void setPassword(String password) {
         this.password = password;

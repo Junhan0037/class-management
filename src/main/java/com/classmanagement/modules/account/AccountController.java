@@ -1,5 +1,6 @@
 package com.classmanagement.modules.account;
 
+import com.classmanagement.infra.common.AppProperties;
 import com.classmanagement.infra.common.ErrorsResource;
 import com.classmanagement.modules.token.TokenEmail;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class AccountController {
     private final AccountService accountService;
     private final ModelMapper modelMapper;
     private final AccountValidator accountValidator;
+    private final AppProperties appProperties;
 
 //    @InitBinder("accountDto")
 //    public void initBinder(WebDataBinder webDataBinder) {
@@ -49,6 +51,8 @@ public class AccountController {
         }
 
         Account account = modelMapper.map(accountDto, Account.class);
+        account.setAuthorizationID(appProperties.getClientId());
+        account.setAuthorizationPW(appProperties.getClientSecret());
         Account newAccount = accountService.saveAccount(account);
 
         AccountResource accountResource = new AccountResource(newAccount); // "/api/{id}"
