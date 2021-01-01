@@ -14,22 +14,16 @@ import javax.validation.constraints.NotEmpty;
 public class AppProperties {
 
     @NotEmpty
+    private String testUsername;
+
+    @NotEmpty
+    private String testPassword;
+
+    @NotEmpty
     private String adminUsername;
 
     @NotEmpty
     private String adminPassword;
-
-    @NotEmpty
-    private String teacherUsername;
-
-    @NotEmpty
-    private String teacherPassword;
-
-    @NotEmpty
-    private String studentUsername;
-
-    @NotEmpty
-    private String studentPassword;
 
     @NotEmpty
     private String clientId;

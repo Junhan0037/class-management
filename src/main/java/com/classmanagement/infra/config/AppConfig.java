@@ -13,8 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Set;
-
 @Configuration
 public class AppConfig {
 
@@ -40,7 +38,7 @@ public class AppConfig {
                 Account admin = Account.builder()
                         .email(appProperties.getAdminUsername())
                         .password(appProperties.getAdminPassword())
-                        .roles(Set.of(Role.ADMIN, Role.TEACHER))
+                        .role(Role.ADMIN)
                         .build();
                 accountService.saveAccount(admin);
             }

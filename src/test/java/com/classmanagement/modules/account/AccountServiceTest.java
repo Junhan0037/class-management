@@ -30,7 +30,7 @@ class AccountServiceTest {
                 .email(username)
                 .password(password)
                 .name("junhan")
-                .roles(Set.of(Role.ADMIN, Role.TEACHER))
+                .role(Role.STUDENT)
                 .build();
         accountService.saveAccount(account);
 

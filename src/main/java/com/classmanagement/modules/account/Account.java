@@ -5,13 +5,11 @@ import com.classmanagement.modules.main.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Set;
 
 @Entity
 @Getter @Setter
 @Builder @AllArgsConstructor @NoArgsConstructor
-public class Account extends BaseTimeEntity implements Serializable {
+public class Account extends BaseTimeEntity {
 
     @Id @GeneratedValue
     private Long id;
@@ -23,13 +21,8 @@ public class Account extends BaseTimeEntity implements Serializable {
 
     private String name;
 
-    private boolean emailVerified;
-
-    private String emailCheckToken;
-
-    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private Set<Role> roles;
+    private Role role = Role.USER;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Classroom classroom;
