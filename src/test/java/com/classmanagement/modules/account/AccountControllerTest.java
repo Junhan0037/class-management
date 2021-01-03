@@ -43,6 +43,7 @@ class AccountControllerTest extends BaseTest {
                 .password(appProperties.getTestPassword())
                 .passwordConfirm(appProperties.getTestPassword())
                 .name("홍길동")
+                .role(Role.STUDENT)
                 .build();
 
         mockMvc.perform(post("/api/accounts")
@@ -52,7 +53,7 @@ class AccountControllerTest extends BaseTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
-                .andExpect(jsonPath("role").value(Role.USER.name()))
+                .andExpect(jsonPath("role").value(Role.STUDENT.name()))
                 .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE+";charset=UTF-8"))
                 .andExpect(jsonPath("_links.self").exists())
@@ -72,7 +73,8 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("email").description("Email of new account"),
                                 fieldWithPath("password").description("Password of new account"),
                                 fieldWithPath("passwordConfirm").description("PasswordConfirm of new account"),
-                                fieldWithPath("name").description("Name of new account")
+                                fieldWithPath("name").description("Name of new account"),
+                                fieldWithPath("role").description("Role of new account (TEACHER, STUDENT)")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.LOCATION).description("location header"),
@@ -103,7 +105,8 @@ class AccountControllerTest extends BaseTest {
                 .email(appProperties.getTestUsername())
                 .password(appProperties.getTestPassword())
                 .name("홍길동")
-                .role(Role.ADMIN) // 받을 수 없는 입력값
+                .role(Role.USER)
+                .id(123l) // 받을 수 없는 입력값
                 .build();
 
         mockMvc.perform(post("/api/accounts")
@@ -136,6 +139,7 @@ class AccountControllerTest extends BaseTest {
                 .password(appProperties.getTestPassword())
                 .passwordConfirm("skjdiwhduadas")
                 .name("홍길동")
+                .role(Role.USER)
                 .build();
 
         mockMvc.perform(post("/api/accounts")

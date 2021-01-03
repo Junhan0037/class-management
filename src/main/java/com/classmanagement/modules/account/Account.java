@@ -22,7 +22,7 @@ public class Account extends BaseTimeEntity {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    private Role role = Role.USER;
+    private Role role;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Classroom classroom;
