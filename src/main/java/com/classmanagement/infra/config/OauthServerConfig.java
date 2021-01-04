@@ -14,6 +14,9 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
+import javax.persistence.Column;
+import javax.sql.DataSource;
+
 @Configuration
 @EnableAuthorizationServer
 @RequiredArgsConstructor
@@ -25,6 +28,7 @@ public class OauthServerConfig extends AuthorizationServerConfigurerAdapter {
     private final AppProperties appProperties;
     private final JwtAccessTokenConverter jwtAccessTokenConverter;
     private final TokenStore tokenStore;
+    private final DataSource dataSource;
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
@@ -33,7 +37,8 @@ public class OauthServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory()
+//        clients.jdbc(dataSource).passwordEncoder(passwordEncoder);
+        clients.jdbc(dataSource)
                 .withClient(appProperties.getClientId())
                 .secret(passwordEncoder.encode(appProperties.getClientSecret()))
                 .redirectUris("http://localhost:8080/oauth2/callback")

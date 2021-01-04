@@ -25,7 +25,12 @@ public class OauthController {
     @GetMapping("/callback")
     public OauthToken callbackSocial(@RequestParam String code) {
         String credentials = appProperties.getClientId() + ":" + appProperties.getClientSecret();
+//        String credentials = "abc:123";
         String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
+
+        System.out.println("========================================");
+        System.out.println("callbackSocial!!!");
+        System.out.println("========================================");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -35,6 +40,34 @@ public class OauthController {
         params.add("code", code);
         params.add("grant_type", "authorization_code");
         params.add("redirect_uri", "http://localhost:8080/oauth2/callback");
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+        System.out.println(request.toString());
+        ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:8080/oauth/token", request, String.class);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            OauthToken oauthToken = gson.fromJson(response.getBody(), OauthToken.class);
+            return oauthToken;
+        }
+        return null;
+    }
+
+    @GetMapping("/callback2")
+    public OauthToken callbackSocial2(@RequestParam String code) {
+//        String credentials = appProperties.getClientId() + ":" + appProperties.getClientSecret();
+        String credentials = "abc:123";
+        String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
+
+        System.out.println("========================================");
+        System.out.println("callbackSocial!!!");
+        System.out.println("========================================");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.add("Authorization", "Basic " + encodedCredentials);
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("code", code);
+        params.add("grant_type", "authorization_code");
+        params.add("redirect_uri", "http://localhost:8080/oauth2/callback2");
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
         System.out.println(request.toString());
         ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:8080/oauth/token", request, String.class);
