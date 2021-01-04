@@ -19,7 +19,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
-//        resources.resourceId("classroom");
+        resources.resourceId("account");
         resources.tokenStore(tokenStore);
     }
 
@@ -28,6 +28,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         http.anonymous()
             .and()
             .authorizeRequests()
+                .mvcMatchers("oauth/**", "/oauth2/callback").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/api").permitAll() // IndexController
                 .mvcMatchers(HttpMethod.POST, "/api/accounts").permitAll() // 회원 등록
                 .anyRequest().authenticated();

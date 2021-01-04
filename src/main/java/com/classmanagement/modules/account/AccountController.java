@@ -51,8 +51,8 @@ public class AccountController {
         }
 
         Account account = modelMapper.map(accountDto, Account.class);
-        account.setAuthorizationID(appProperties.getClientId());
-        account.setAuthorizationPW(appProperties.getClientSecret());
+//        account.setAuthorizationID(appProperties.getClientId());
+//        account.setAuthorizationPW(appProperties.getClientSecret());
         Account newAccount = accountService.saveAccount(account);
 
         AccountResource accountResource = new AccountResource(newAccount); // "/api/{id}"

@@ -1,14 +1,15 @@
 package com.classmanagement.infra.config;
 
 import com.classmanagement.infra.common.AppProperties;
-import com.classmanagement.modules.account.*;
+import com.classmanagement.modules.account.Account;
+import com.classmanagement.modules.account.AccountRepository;
+import com.classmanagement.modules.account.AccountService;
+import com.classmanagement.modules.account.Role;
 import com.classmanagement.modules.common.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.oauth2.common.util.Jackson2JsonParser;
-import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -16,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class AuthServerConfigTest extends BaseTest {
+class OauthServerConfigTest extends BaseTest {
 
     @Autowired AccountService accountService;
     @Autowired AppProperties appProperties;

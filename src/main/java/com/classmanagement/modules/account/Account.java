@@ -27,9 +27,6 @@ public class Account extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Classroom classroom;
 
-    private String AuthorizationID;
-    private String AuthorizationPW;
-
     public void setPassword(String password) {
         this.password = password;
     }
