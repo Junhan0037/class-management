@@ -2,6 +2,8 @@ package com.classmanagement.modules.account;
 
 import com.classmanagement.infra.common.AppProperties;
 import com.classmanagement.modules.common.BaseTest;
+import com.classmanagement.modules.oauth2.OauthClientDetails;
+import com.classmanagement.modules.oauth2.OauthClientDetailsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +31,7 @@ class AccountControllerTest extends BaseTest {
     @Autowired AppProperties appProperties;
     @Autowired AccountService accountService;
     @Autowired AccountRepository accountRepository;
+    @Autowired OauthClientDetailsService oauthClientDetailsService;
 
     @BeforeEach
     public void setup() {
@@ -89,8 +92,7 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("name").description("Name of new account"),
                                 fieldWithPath("role").description("Role of new account"),
                                 fieldWithPath("classroom").description("Classroom of new account"),
-                                fieldWithPath("authorizationID").description("Id of Authorization"),
-                                fieldWithPath("authorizationPW").description("Password of Authorization"),
+                                fieldWithPath("oauthClientDetails.REST_API_KEY").description("Id of OauthClient"),
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.create-account.href").description("link to query-accounts"),
                                 fieldWithPath("_links.profile.href").description("link to profile")
@@ -161,7 +163,7 @@ class AccountControllerTest extends BaseTest {
         IntStream.range(0, 30).forEach(this::generateAccount);
 
         mockMvc.perform(get("/api/accounts")
-                        .header(HttpHeaders.AUTHORIZATION, getBearerToken(true))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaTypes.HAL_JSON)
                         .param("page", "0")
@@ -202,8 +204,7 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("_embedded.accountList[0].name").description("Name of new account"),
                                 fieldWithPath("_embedded.accountList[0].role").description("Role of new account"),
                                 fieldWithPath("_embedded.accountList[0].classroom").description("Classroom of new account"),
-                                fieldWithPath("_embedded.accountList[0].authorizationID").description("Id of Authorization"),
-                                fieldWithPath("_embedded.accountList[0].authorizationPW").description("Password of Authorization"),
+                                fieldWithPath("_embedded.accountList[0].oauthClientDetails.REST_API_KEY").description("Id of OauthClient"),
                                 fieldWithPath("_embedded.accountList[0]._links.self.href").description("link to self"),
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.query-accounts.href").description("link to query-accounts"),
@@ -222,8 +223,11 @@ class AccountControllerTest extends BaseTest {
     @Test
     @DisplayName("정상적으로 회원 단건 조회 테스트")
     public void queryAccount() throws Exception {
-        mockMvc.perform(get("/api/accounts/{email}", appProperties.getTestUsername())
-                        .header(HttpHeaders.AUTHORIZATION, getBearerToken(true))
+        //given
+        IntStream.range(0, 30).forEach(this::generateAccount);
+
+        mockMvc.perform(get("/api/accounts/{email}", appProperties.getTestUsername() + 10)
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaTypes.HAL_JSON))
                 .andDo(print())
@@ -231,7 +235,7 @@ class AccountControllerTest extends BaseTest {
                 .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE+";charset=UTF-8"))
                 .andExpect(jsonPath("id").exists())
-                .andExpect(jsonPath("email").value(appProperties.getTestUsername()))
+                .andExpect(jsonPath("email").value(appProperties.getTestUsername() + 10))
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.profile").exists())
                 .andExpect(jsonPath("_links.query-account").exists())
@@ -259,8 +263,7 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("name").description("Name of new account"),
                                 fieldWithPath("role").description("Role of new account"),
                                 fieldWithPath("classroom").description("Classroom of new account"),
-                                fieldWithPath("authorizationID").description("Id of Authorization"),
-                                fieldWithPath("authorizationPW").description("Password of Authorization"),
+                                fieldWithPath("oauthClientDetails.REST_API_KEY").description("Id of OauthClient"),
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.query-account.href").description("link to query-account"),
                                 fieldWithPath("_links.profile.href").description("link to profile")
@@ -269,14 +272,14 @@ class AccountControllerTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("30개의 회원정보를 10개씩 두번째 페이지 조회하기")
+    @DisplayName("30개의 회원정보를 10개씩 첫번째 페이지 조회하기")
     public void queryAccountsWithPaging() throws Exception {
         //given
         IntStream.range(0, 30).forEach(this::generateAccount);
 
         //when & then
         mockMvc.perform(get("/api/accounts")
-                        .header(HttpHeaders.AUTHORIZATION, getBearerToken(true))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaTypes.HAL_JSON)
                         .param("page", "0")
@@ -288,7 +291,10 @@ class AccountControllerTest extends BaseTest {
                 .andExpect(jsonPath("_embedded.accountList[0]._links.self").exists())
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.profile").exists())
-                .andExpect(jsonPath("_links.query-accounts").exists());
+                .andExpect(jsonPath("_links.query-accounts").exists())
+                .andExpect(jsonPath("_links.first").exists())
+                .andExpect(jsonPath("_links.next").exists())
+                .andExpect(jsonPath("_links.last").exists());
     }
 
     @Test
@@ -296,7 +302,7 @@ class AccountControllerTest extends BaseTest {
     public void getAccount404() throws Exception {
         //when & then
         mockMvc.perform(get("/api/accounts/abc@abc.com")
-                        .header(HttpHeaders.AUTHORIZATION, getBearerToken(true))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaTypes.HAL_JSON))
                 .andDo(print())
@@ -308,19 +314,18 @@ class AccountControllerTest extends BaseTest {
     public void updateEvent() throws Exception {
         //given
         Account account = Account.builder()
-                .email(appProperties.getAdminUsername())
-                .password(appProperties.getAdminPassword())
+                .email(appProperties.getTestUsername())
+                .password(appProperties.getTestPassword())
                 .name("홍길동")
                 .role(Role.ADMIN)
                 .build();
-        accountService.saveAccount(account);
 
         AccountUpdateDto accountUpdateDto = modelMapper.map(account, AccountUpdateDto.class);
         String newName = "김삿갓";
         accountUpdateDto.setName(newName);
 
-        mockMvc.perform(put("/api/accounts/{email}", appProperties.getAdminUsername())
-                        .header(HttpHeaders.AUTHORIZATION, getBearerToken(true))
+        mockMvc.perform(put("/api/accounts/{email}", appProperties.getTestUsername())
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaTypes.HAL_JSON)
                         .content(objectMapper.writeValueAsString(accountUpdateDto)))
@@ -357,8 +362,7 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("name").description("Name of new account"),
                                 fieldWithPath("role").description("Role of new account"),
                                 fieldWithPath("classroom").description("Classroom of new account"),
-                                fieldWithPath("authorizationID").description("Id of Authorization"),
-                                fieldWithPath("authorizationPW").description("Password of Authorization"),
+                                fieldWithPath("oauthClientDetails.REST_API_KEY").description("Id of OauthClient"),
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.update-account.href").description("link to update-account"),
                                 fieldWithPath("_links.profile.href").description("link to profile")
@@ -372,7 +376,7 @@ class AccountControllerTest extends BaseTest {
         AccountUpdateDto accountUpdateDto = AccountUpdateDto.builder().build(); // 비어있는 입력값
 
         mockMvc.perform(put("/api/accounts/{email}", appProperties.getTestUsername())
-                        .header(HttpHeaders.AUTHORIZATION, getBearerToken(true))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaTypes.HAL_JSON)
                         .content(objectMapper.writeValueAsString(accountUpdateDto)))
@@ -386,19 +390,18 @@ class AccountControllerTest extends BaseTest {
     public void updateAccount_Bad_Request_Wrong_Input() throws Exception {
         //given
         Account account = Account.builder()
-                .email(appProperties.getAdminUsername())
-                .password(appProperties.getAdminPassword())
+                .email(appProperties.getTestUsername())
+                .password(appProperties.getTestPassword())
                 .name("홍길동")
                 .role(Role.ADMIN)
                 .build();
-        accountService.saveAccount(account);
 
         AccountUpdateDto accountUpdateDto = modelMapper.map(account, AccountUpdateDto.class);
         String newName = "김삿갓";
         accountUpdateDto.setName(newName);
 
         mockMvc.perform(put("/api/accounts/abc@abc.com")
-                        .header(HttpHeaders.AUTHORIZATION, getBearerToken(true))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaTypes.HAL_JSON)
                         .content(objectMapper.writeValueAsString(accountUpdateDto)))
@@ -406,44 +409,47 @@ class AccountControllerTest extends BaseTest {
                 .andExpect(status().isNotFound());
     }
 
-    private String getBearerToken(boolean needToCreateAccount) throws Exception {
-        return "Bearer " + getAccessToken(needToCreateAccount);
-    }
+    private String getBearerToken() throws Exception {
+        Account account = Account.builder()
+                .email(appProperties.getTestUsername())
+                .password(appProperties.getTestPassword())
+                .name("홍길동")
+                .role(Role.ADMIN)
+                .build();
+        OauthClientDetails oauthClientDetails = oauthClientDetailsService.createOauthClientDetails();
+        account.setOauthClientDetails(oauthClientDetails);
+        accountService.saveAccount(account);
 
-    private String getAccessToken(boolean needToCreateAccount) throws Exception {
-        if (needToCreateAccount) {
-            Account account = Account.builder()
-                    .email(appProperties.getTestUsername())
-                    .password(appProperties.getTestPassword())
-                    .name("홍길동")
-                    .role(Role.ADMIN)
-                    .build();
-            accountService.saveAccount(account);
-        }
+        ResultActions authorize = mockMvc.perform(get("/oauth/authorize")
+                                                    .with(httpBasic(appProperties.getTestUsername(), appProperties.getTestPassword()))
+                                                    .param("client_id", String.valueOf(oauthClientDetails.getClientId()))
+                                                    .param("redirect_uri", "http://localhost:8080/oauth2")
+                                                    .param("response_type", "code"));
+        var redirectedUrl = authorize.andReturn().getResponse().getRedirectedUrl();
+        String code = redirectedUrl.substring(redirectedUrl.lastIndexOf("=") + 1);
 
         ResultActions perform = mockMvc.perform(post("/oauth/token")
-                .with(httpBasic(appProperties.getClientId(), appProperties.getClientSecret()))
-                .param("username", appProperties.getTestUsername())
-                .param("password", appProperties.getTestPassword())
-                .param("grant_type", "password"));
-
-        var responseBody = perform.andReturn().getResponse().getContentAsString();
+                                                .with(httpBasic(String.valueOf(oauthClientDetails.getClientId()), oauthClientDetails.getNonPasswordEncoder()))
+                                                .param("code", code)
+                                                .param("grant_type", "authorization_code")
+                                                .param("redirect_uri", "http://localhost:8080/oauth2"));
+        var resultBody = perform.andReturn().getResponse().getContentAsString();
         Jackson2JsonParser parser = new Jackson2JsonParser();
-        return parser.parseMap(responseBody).get("access_token").toString();
+        String accessToken = parser.parseMap(resultBody).get("access_token").toString();
+
+        return "Bearer " + accessToken;
     }
 
     private Account generateAccount(int index) {
-        Account account = buildAccount(index);
+        Account account = Account.builder()
+                                .email(appProperties.getTestUsername() + index)
+                                .password(appProperties.getTestPassword() + index)
+                                .name("홍길동" + index)
+                                .role(Role.ADMIN)
+                                .build();
+        OauthClientDetails oauthClientDetails = oauthClientDetailsService.createOauthClientDetails();
+        account.setOauthClientDetails(oauthClientDetails);
         return accountRepository.save(account);
-    }
-
-    private Account buildAccount(int index) {
-        return Account.builder()
-                .email(appProperties.getTestUsername() + index)
-                .password(appProperties.getTestPassword() + index)
-                .name("홍길동" + index)
-                .role(Role.ADMIN)
-                .build();
     }
 
 }

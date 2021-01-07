@@ -1,20 +1,18 @@
 package com.classmanagement.modules.oauth2;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Getter @Setter
+@Getter @Setter @Builder
+@AllArgsConstructor @NoArgsConstructor
 @Table(name = "oauth_client_details")
 public class OauthClientDetails {
 
-    @Id @Column(name = "client_id")
-    private String clientId;
+    @Id @GeneratedValue
+    @Column(name = "client_id")
+    private Long clientId;
 
     @Column(name = "resource_ids")
     private String resourceIds;
@@ -45,5 +43,7 @@ public class OauthClientDetails {
 
     @Column(name = "autoapprove")
     private String autoapprove;
+
+    private String nonPasswordEncoder;
 
 }

@@ -2,6 +2,9 @@ package com.classmanagement.modules.account;
 
 import com.classmanagement.modules.classroom.Classroom;
 import com.classmanagement.modules.main.BaseTimeEntity;
+import com.classmanagement.modules.oauth2.OauthClientDetails;
+import com.classmanagement.modules.oauth2.OauthClientDetailsSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 import javax.persistence.*;
@@ -27,8 +30,8 @@ public class Account extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Classroom classroom;
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    @OneToOne(fetch = FetchType.LAZY)
+    @JsonSerialize(using = OauthClientDetailsSerializer.class)
+    private OauthClientDetails oauthClientDetails;
 
 }

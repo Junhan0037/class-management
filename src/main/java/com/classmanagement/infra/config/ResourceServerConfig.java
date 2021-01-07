@@ -28,7 +28,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         http.anonymous()
             .and()
             .authorizeRequests()
-                .mvcMatchers("oauth/**", "/oauth2/callback", "/oauth2/callback2").permitAll()
+                .mvcMatchers("oauth/**", "/oauth2/callback", "/oauth2/callback/**", "/oauth2/token/refresh", "/oauth2", "/oauth2/token").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/api").permitAll() // IndexController
                 .mvcMatchers(HttpMethod.POST, "/api/accounts").permitAll() // 회원 등록
                 .anyRequest().authenticated();

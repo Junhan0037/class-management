@@ -1,7 +1,8 @@
 package com.classmanagement.modules.account;
 
-import com.classmanagement.infra.common.AppProperties;
 import com.classmanagement.infra.common.ErrorsResource;
+import com.classmanagement.modules.oauth2.OauthClientDetails;
+import com.classmanagement.modules.oauth2.OauthClientDetailsService;
 import com.classmanagement.modules.token.TokenEmail;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -30,14 +32,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 public class AccountController {
 
     private final AccountService accountService;
+    private final OauthClientDetailsService oauthClientDetailsService;
     private final ModelMapper modelMapper;
     private final AccountValidator accountValidator;
-    private final AppProperties appProperties;
-
-//    @InitBinder("accountDto")
-//    public void initBinder(WebDataBinder webDataBinder) {
-//        webDataBinder.addValidators(accountValidator);
-//    }
 
     @PostMapping // 회원 등록
     public ResponseEntity createAccount(@RequestBody @Valid AccountDto accountDto, Errors errors) {
@@ -51,13 +48,13 @@ public class AccountController {
         }
 
         Account account = modelMapper.map(accountDto, Account.class);
-//        account.setAuthorizationID(appProperties.getClientId());
-//        account.setAuthorizationPW(appProperties.getClientSecret());
+        OauthClientDetails oauthClientDetails = oauthClientDetailsService.createOauthClientDetails();
+        account.setOauthClientDetails(oauthClientDetails);
         Account newAccount = accountService.saveAccount(account);
 
         AccountResource accountResource = new AccountResource(newAccount); // "/api/{id}"
         accountResource.add(linkTo(AccountController.class).withRel("create-account")); // "/api/accounts"
-        accountResource.add(new Link("/docs/account.html#resources-accounts-create").withRel("profile")); // docs link
+        accountResource.add(new Link("/docs/account.html#resources-index-create").withRel("profile")); // docs link
 
         WebMvcLinkBuilder selfLinkBuilder = linkTo(AccountController.class).slash(newAccount.getId()); // Location Header
         URI createdUri = selfLinkBuilder.toUri();
@@ -85,17 +82,17 @@ public class AccountController {
 
     @GetMapping("{email}") // 회원 단건 조회 (TODO 선생님용 회원 단건 조회 개발 필요!)
     public ResponseEntity getAccount(@PathVariable String email, @TokenEmail String currentUser) {
-        Account user = accountService.findAccount(currentUser).orElseThrow(() -> new UsernameNotFoundException(currentUser));
-        if (user.getRole() != Role.ADMIN) {
-            return ResponseEntity.badRequest().body("해당 사용자의 권한으로 접근할 수 없습니다.");
-        }
-
         Optional<Account> optionalAccount = accountService.findAccount(email);
         if (optionalAccount.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 email의 회원 정보가 없습니다.");
         }
-
         Account findAccount = optionalAccount.get();
+
+        Account user = accountService.findAccount(currentUser).orElseThrow(() -> new UsernameNotFoundException(currentUser));
+        if (user.getRole() != Role.ADMIN && !user.getEmail().equals(findAccount.getEmail())) {
+            return ResponseEntity.badRequest().body("해당 사용자의 권한으로 접근할 수 없습니다.");
+        }
+
         AccountResource accountResource = new AccountResource(findAccount);
         accountResource.add(new Link("/docs/index.html#resources-accounts-get").withRel("profile"));
         accountResource.add(linkTo(AccountController.class).slash(findAccount.getEmail()).withRel("query-account"));
@@ -119,7 +116,7 @@ public class AccountController {
 
         Account existingAccount = optionalAccount.get();
         Account user = accountService.findAccount(currentUser).orElseThrow(() -> new UsernameNotFoundException(currentUser));
-        if (user.getRole() != Role.ADMIN || user.getRole() != existingAccount.getRole()) {
+        if (user.getRole() != Role.ADMIN && user.getRole() != existingAccount.getRole()) {
             return ResponseEntity.badRequest().body("해당 사용자의 권한으로 접근할 수 없습니다.");
         }
 
