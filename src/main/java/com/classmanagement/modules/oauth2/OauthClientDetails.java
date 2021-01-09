@@ -1,14 +1,19 @@
 package com.classmanagement.modules.oauth2;
 
+import com.classmanagement.modules.account.Account;
+import com.classmanagement.modules.main.BaseTimeEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter @Setter @Builder
 @AllArgsConstructor @NoArgsConstructor
 @Table(name = "oauth_client_details")
-public class OauthClientDetails {
+public class OauthClientDetails extends BaseTimeEntity {
 
     @Id @GeneratedValue
     @Column(name = "client_id")
@@ -45,5 +50,13 @@ public class OauthClientDetails {
     private String autoapprove;
 
     private String nonPasswordEncoder;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "oauthClientDetails", fetch = FetchType.LAZY)
+    private Account account;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "oauthClientDetails", fetch = FetchType.LAZY)
+    private List<OauthToken> oauthToken = new ArrayList<>();
 
 }

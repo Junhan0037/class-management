@@ -27,11 +27,17 @@ public class Account extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Classroom classroom;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JsonSerialize(using = OauthClientDetailsSerializer.class)
     private OauthClientDetails oauthClientDetails;
+
+    //== 연관관계 메서드 ==//
+    public void setOauthClientDetails(OauthClientDetails oauthClientDetails) {
+        this.oauthClientDetails = oauthClientDetails;
+        oauthClientDetails.setAccount(this);
+    }
 
 }

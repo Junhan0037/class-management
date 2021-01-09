@@ -107,7 +107,7 @@ class AccountControllerTest extends BaseTest {
                 .email(appProperties.getTestUsername())
                 .password(appProperties.getTestPassword())
                 .name("홍길동")
-                .role(Role.USER)
+                .role(Role.STUDENT)
                 .id(123l) // 받을 수 없는 입력값
                 .build();
 
@@ -141,7 +141,7 @@ class AccountControllerTest extends BaseTest {
                 .password(appProperties.getTestPassword())
                 .passwordConfirm("skjdiwhduadas")
                 .name("홍길동")
-                .role(Role.USER)
+                .role(Role.STUDENT)
                 .build();
 
         mockMvc.perform(post("/api/accounts")
