@@ -91,7 +91,6 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("password").description("Password of new account"),
                                 fieldWithPath("name").description("Name of new account"),
                                 fieldWithPath("role").description("Role of new account"),
-                                fieldWithPath("classroom").description("Classroom of new account"),
                                 fieldWithPath("oauthClientDetails.REST_API_KEY").description("Id of OauthClient"),
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.create-account.href").description("link to query-accounts"),
@@ -203,7 +202,6 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("_embedded.accountList[0].password").description("Password of new account"),
                                 fieldWithPath("_embedded.accountList[0].name").description("Name of new account"),
                                 fieldWithPath("_embedded.accountList[0].role").description("Role of new account"),
-                                fieldWithPath("_embedded.accountList[0].classroom").description("Classroom of new account"),
                                 fieldWithPath("_embedded.accountList[0].oauthClientDetails.REST_API_KEY").description("Id of OauthClient"),
                                 fieldWithPath("_embedded.accountList[0]._links.self.href").description("link to self"),
                                 fieldWithPath("_links.self.href").description("link to self"),
@@ -262,7 +260,6 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("password").description("Password of new account"),
                                 fieldWithPath("name").description("Name of new account"),
                                 fieldWithPath("role").description("Role of new account"),
-                                fieldWithPath("classroom").description("Classroom of new account"),
                                 fieldWithPath("oauthClientDetails.REST_API_KEY").description("Id of OauthClient"),
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.query-account.href").description("link to query-account"),
@@ -347,7 +344,7 @@ class AccountControllerTest extends BaseTest {
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("JWT token header")
                         ),
                         requestFields(
-                                fieldWithPath("name").description("Name of new account")
+                                fieldWithPath("name").description("새로운 이름")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.LOCATION).description("location header"),
@@ -361,7 +358,6 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("password").description("Password of new account"),
                                 fieldWithPath("name").description("Name of new account"),
                                 fieldWithPath("role").description("Role of new account"),
-                                fieldWithPath("classroom").description("Classroom of new account"),
                                 fieldWithPath("oauthClientDetails.REST_API_KEY").description("Id of OauthClient"),
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.update-account.href").description("link to update-account"),

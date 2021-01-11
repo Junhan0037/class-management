@@ -8,6 +8,9 @@ import com.classmanagement.modules.account.Role;
 import com.classmanagement.modules.token.TokenEmail;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -15,12 +18,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
-
 import java.net.URI;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -53,7 +56,6 @@ public class ClassroomController {
 
         Classroom classroom = modelMapper.map(classroomDto, Classroom.class);
         classroom.setTeacher(user);
-        classroom.addMembers(user);
         Classroom newClassroom = classroomService.saveClassroom(classroom);
 
         ClassroomResource classroomResource = new ClassroomResource(newClassroom);
@@ -66,8 +68,26 @@ public class ClassroomController {
         return ResponseEntity.created(createdUri).body(classroomResource);
     }
 
+    @GetMapping // 선생님이 관리중인 학급 리스트 조회
+    public ResponseEntity queryClassrooms(Pageable pageable, PagedResourcesAssembler<Classroom> assembler, @TokenEmail String currentUser) {
+        Account user = accountService.findAccount(currentUser).orElseThrow(() -> new UsernameNotFoundException(currentUser));
+        if (user.getRole() == Role.STUDENT) {
+            return ResponseEntity.badRequest().body("해당 사용자의 권한으로 접근할 수 없습니다.");
+        }
+
+        Page<Classroom> classroomByAccount = classroomService.findClassroomByAccount(user, pageable); // 2번 방법
+        var pagedResources = assembler.toModel(classroomByAccount, e -> new ClassroomResource(e));
+        pagedResources.add(new Link("/docs/classroom.html#resources-classrooms-list").withRel("profile"));
+        pagedResources.add(linkTo(ClassroomController.class).withRel("query-classrooms"));
+
+        WebMvcLinkBuilder selfLinkBuilder = linkTo(ClassroomController.class);
+        URI createdUri = selfLinkBuilder.toUri();
+
+        return ResponseEntity.created(createdUri).body(pagedResources);
+    }
+
     private ResponseEntity badRequest(Errors errors) {
-        return ResponseEntity.badRequest().body(new ErrorsResource(errors)); // Errors Serializer
+        return ResponseEntity.badRequest().body(new ErrorsResource(errors));
     }
 
 }

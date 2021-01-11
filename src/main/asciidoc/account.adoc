@@ -253,6 +253,6 @@ operation::query-account[snippets='request-headers,curl-request,http-request,res
 [[resources-accounts-update]]
 === 회원 수정
 
-`PUT` 요청을 사용해서 기존 회원 정보를 수정할 수 있다.
+`PUT` 요청을 사용해서 기존 회원 정보를 수정할 수 있다. (`/api/accounts/{email}`)
 
 operation::update-account[snippets='request-headers,request-fields,curl-request,http-request,response-headers,response-fields,http-response,links']

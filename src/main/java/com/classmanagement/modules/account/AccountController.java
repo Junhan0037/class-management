@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -62,7 +61,7 @@ public class AccountController {
         return ResponseEntity.created(createdUri).body(accountResource);
     }
 
-    @GetMapping // 모든 회원 조회 (TODO 선생님용 회원 목록 조회 개발 필요!)
+    @GetMapping // 모든 회원 목록 조회
     public ResponseEntity queryAccounts(Pageable pageable, PagedResourcesAssembler<Account> assembler, @TokenEmail String currentUser) {
         Account user = accountService.findAccount(currentUser).orElseThrow(() -> new UsernameNotFoundException(currentUser));
         if (user.getRole() != Role.ADMIN) {
@@ -71,7 +70,7 @@ public class AccountController {
 
         Page<Account> page = accountService.findAccount(pageable);
         var pagedResources = assembler.toModel(page, e -> new AccountResource(e));
-        pagedResources.add(new Link("/docs/index.html#resources-accounts-list").withRel("profile"));
+        pagedResources.add(new Link("/docs/account.html#resources-accounts-list").withRel("profile"));
         pagedResources.add(linkTo(AccountController.class).withRel("query-accounts"));
 
         WebMvcLinkBuilder selfLinkBuilder = linkTo(AccountController.class); // Location Header
@@ -94,7 +93,7 @@ public class AccountController {
         }
 
         AccountResource accountResource = new AccountResource(findAccount);
-        accountResource.add(new Link("/docs/index.html#resources-accounts-get").withRel("profile"));
+        accountResource.add(new Link("/docs/account.html#resources-accounts-get").withRel("profile"));
         accountResource.add(linkTo(AccountController.class).slash(findAccount.getEmail()).withRel("query-account"));
 
         WebMvcLinkBuilder selfLinkBuilder = linkTo(AccountController.class).slash(findAccount.getEmail()); // Location Header
@@ -123,7 +122,7 @@ public class AccountController {
         Account savedAccount = accountService.updateAccount(accountUpdateDto, existingAccount);
 
         AccountResource accountResource = new AccountResource(savedAccount);
-        accountResource.add(new Link("/docs/index.html#resources-accounts-update").withRel("profile"));
+        accountResource.add(new Link("/docs/account.html#resources-accounts-update").withRel("profile"));
         accountResource.add(linkTo(AccountController.class).slash(email).withRel("update-account"));
 
         WebMvcLinkBuilder selfLinkBuilder = linkTo(AccountController.class).slash(savedAccount.getEmail()); // Location Header

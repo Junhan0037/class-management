@@ -25,9 +25,9 @@ public class AccountValidator implements Validator {
         if (accountRepository.existsByEmail(accountDto.getEmail())) {
             errors.rejectValue("email", "invalid.email", new Object[]{accountDto.getEmail()}, "이미 사용중인 이메일입니다.");
         }
-        if (accountDto.getRole().equals(Role.ADMIN)) {
-            errors.rejectValue("role", "invalid.role", new Object[]{accountDto.getEmail()}, "ADMIN으로 생성할 수 없습니다.");
-        }
+//        if (accountDto.getRole().equals(Role.ADMIN)) {
+//            errors.rejectValue("role", "invalid.role", new Object[]{accountDto.getEmail()}, "ADMIN으로 생성할 수 없습니다.");
+//        }
     }
 
 }

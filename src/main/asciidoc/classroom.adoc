@@ -241,4 +241,11 @@ Content-Type: application/hal+json;charset=UTF-8
 
 `POST` 요청을 사용해서 학급을 생성할 수 있다. (``ADMIN``, ``TEACHER`` 권한만 가능)
 
-operation::create-classroom[snippets='request-headers,curl-request,http-request,response-headers,response-fields,http-response,links']
+operation::create-classroom[snippets='request-headers,request-fields,curl-request,http-request,response-headers,response-fields,http-response,links']
+
+[[resources-classrooms-list]]
+=== 관리중인 학급 조회
+
+`Get` 요청을 사용해서 관리중인 학급을 조회할 수 있다. (``TEACHER`` 권한만 가능)
+
+operation::query-classrooms[snippets='request-headers,curl-request,http-request,response-headers,response-fields,http-response,links']
