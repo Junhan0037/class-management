@@ -1,11 +1,9 @@
 package com.classmanagement.modules.account;
 
 import com.classmanagement.modules.classroom.Classroom;
-import com.classmanagement.modules.classroom.ClassroomSerializer;
 import com.classmanagement.modules.main.BaseTimeEntity;
 import com.classmanagement.modules.oauth2.OauthClientDetails;
 import com.classmanagement.modules.oauth2.OauthClientDetailsSerializer;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;

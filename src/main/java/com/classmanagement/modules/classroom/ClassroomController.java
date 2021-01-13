@@ -14,17 +14,16 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -62,7 +61,7 @@ public class ClassroomController {
         classroomResource.add(linkTo(ClassroomController.class).withRel("create-classroom"));
         classroomResource.add(new Link("/docs/classroom.html#resources-classroom-create").withRel("profile"));
 
-        WebMvcLinkBuilder selfLinkBuilder = linkTo(AccountController.class).slash(newClassroom.getId());
+        WebMvcLinkBuilder selfLinkBuilder = linkTo(ClassroomController.class).slash(newClassroom.getId());
         URI createdUri = selfLinkBuilder.toUri();
 
         return ResponseEntity.created(createdUri).body(classroomResource);
@@ -84,6 +83,32 @@ public class ClassroomController {
         URI createdUri = selfLinkBuilder.toUri();
 
         return ResponseEntity.created(createdUri).body(pagedResources);
+    }
+
+    @PostMapping("/join") // 해당 학급 참여
+    public ResponseEntity joinClassroom(@RequestParam Long id, @RequestParam String name, @TokenEmail String currentUser) {
+        Account user = accountService.findAccount(currentUser).orElseThrow(() -> new UsernameNotFoundException(currentUser));
+        if (user.getRole() != Role.STUDENT) {
+            return ResponseEntity.badRequest().body("해당 사용자의 권한으로 접근할 수 없습니다.");
+        }
+
+        Optional<Classroom> optionalClassroom = classroomService.findClassroom(id, name);
+        if (optionalClassroom.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 id, name의 학급이 존재하지 않습니다.");
+        }
+        Classroom classroom = optionalClassroom.get();
+
+        classroom.addMembers(user);
+        Classroom saveClassroom = classroomService.saveClassroom(classroom);
+
+        ClassroomResource classroomResource = new ClassroomResource(saveClassroom);
+        classroomResource.add(linkTo(ClassroomController.class).withRel("join-classroom"));
+        classroomResource.add(new Link("/docs/classroom.html#resources-classroom-join").withRel("profile"));
+
+        WebMvcLinkBuilder selfLinkBuilder = linkTo(ClassroomController.class).slash(saveClassroom.getId());
+        URI createdUri = selfLinkBuilder.toUri();
+
+        return ResponseEntity.created(createdUri).body(classroomResource);
     }
 
     private ResponseEntity badRequest(Errors errors) {

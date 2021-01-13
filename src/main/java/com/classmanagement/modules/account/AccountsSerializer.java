@@ -11,19 +11,12 @@ public class AccountsSerializer extends JsonSerializer<List<Account>> {
 
     @Override
     public void serialize(List<Account> accounts, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-        jsonGenerator.writeFieldName("members");
         jsonGenerator.writeStartArray();
-
-        accounts.forEach(e -> {
-            try {
-                jsonGenerator.writeStartObject();
-                jsonGenerator.writeStringField("name", e.getName());
-                jsonGenerator.writeEndObject();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-        });
-
+        for (Account account : accounts) {
+            jsonGenerator.writeStartObject();
+            jsonGenerator.writeStringField("name", account.getName());
+            jsonGenerator.writeEndObject();
+        }
         jsonGenerator.writeEndArray();
     }
 

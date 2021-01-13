@@ -2,6 +2,7 @@ package com.classmanagement.modules.classroom;
 
 import com.classmanagement.modules.account.Account;
 import com.classmanagement.modules.account.AccountSerializer;
+import com.classmanagement.modules.account.AccountsSerializer;
 import com.classmanagement.modules.main.BaseTimeEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -21,12 +22,12 @@ public class Classroom extends BaseTimeEntity {
 
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonSerialize(using = AccountSerializer.class)
     private Account teacher;
 
-    @OneToMany(mappedBy = "classroom")
-    @JsonIgnore
+    @OneToMany(mappedBy = "classroom", cascade = CascadeType.REMOVE)
+    @JsonSerialize(using = AccountsSerializer.class)
     private List<Account> members = new ArrayList<>();
 
     //== 연관관계 메서드 ==//

@@ -249,3 +249,10 @@ operation::create-classroom[snippets='request-headers,request-fields,curl-reques
 `Get` 요청을 사용해서 관리중인 학급을 조회할 수 있다. (``TEACHER`` 권한만 가능)
 
 operation::query-classrooms[snippets='request-headers,curl-request,http-request,response-headers,response-fields,http-response,links']
+
+[[resources-classroom-join]]
+=== 해당 학급 참여
+
+`POST` 요청을 사용해서 해당 학급에 참여할 수 있다. (``STUDENT`` 권한만 가능)
+
+operation::join-classroom[snippets='request-headers,request-parameters,curl-request,http-request,response-headers,response-fields,http-response,links']
