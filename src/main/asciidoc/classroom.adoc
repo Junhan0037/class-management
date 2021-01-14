@@ -256,3 +256,10 @@ operation::query-classrooms[snippets='request-headers,curl-request,http-request,
 `POST` 요청을 사용해서 해당 학급에 참여할 수 있다. (``STUDENT`` 권한만 가능)
 
 operation::join-classroom[snippets='request-headers,request-parameters,curl-request,http-request,response-headers,response-fields,http-response,links']
+
+[[resources-classroom-cancel]]
+=== 해당 학급에서 나가기
+
+`POST` 요청을 사용해서 학생이 해당 학급에서 나갈 수 있다. (``STUDENT`` 권한만 가능)
+
+operation::cancel-classroom[snippets='request-headers,request-parameters,curl-request,http-request,response-headers,response-fields,http-response,links']

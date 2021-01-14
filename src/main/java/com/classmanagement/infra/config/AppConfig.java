@@ -1,21 +1,11 @@
 package com.classmanagement.infra.config;
 
 import com.classmanagement.infra.common.AppProperties;
-import com.classmanagement.modules.account.Account;
-import com.classmanagement.modules.account.AccountService;
-import com.classmanagement.modules.account.Role;
-import com.classmanagement.modules.oauth2.OauthClientDetails;
-import com.classmanagement.modules.oauth2.OauthClientDetailsRepository;
-import com.classmanagement.modules.oauth2.OauthClientDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;

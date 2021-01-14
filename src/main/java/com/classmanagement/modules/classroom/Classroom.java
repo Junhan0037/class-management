@@ -4,7 +4,6 @@ import com.classmanagement.modules.account.Account;
 import com.classmanagement.modules.account.AccountSerializer;
 import com.classmanagement.modules.account.AccountsSerializer;
 import com.classmanagement.modules.main.BaseTimeEntity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
@@ -34,6 +33,11 @@ public class Classroom extends BaseTimeEntity {
     public void addMembers(Account account) {
         members.add(account);
         account.setClassroom(this);
+    }
+
+    public void cancelMember(Account account) {
+        members.remove(account);
+        account.setClassroom(null);
     }
 
     public void setTeacher(Account teacher) {

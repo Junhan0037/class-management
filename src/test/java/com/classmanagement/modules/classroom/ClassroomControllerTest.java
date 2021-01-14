@@ -18,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.common.util.Jackson2JsonParser;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -279,6 +280,80 @@ class ClassroomControllerTest extends BaseTest {
                 ));
     }
 
+    @Test
+    @DisplayName("해당 학급 나가기 테스트")
+    public void cancelClassroom() throws Exception {
+        Map<String, Object> map = createAccount();
+        Object teacher = map.get("account");
+
+        Classroom classroom = generateClassroom((Account) teacher, 1);
+
+        String studentId = "zxc@zxc.com";
+        String studentPw = "1234";
+        Account account = Account.builder()
+                .email(studentId)
+                .password(studentPw)
+                .name("학생1")
+                .role(Role.STUDENT)
+                .build();
+        OauthClientDetails oauthClientDetails = oauthClientDetailsService.createOauthClientDetails();
+        account.setOauthClientDetails(oauthClientDetails);
+        account.setClassroom(classroom);
+        accountService.saveAccount(account);
+
+        classroom.getMembers().add(account);
+        classroomService.saveClassroom(classroom);
+
+        mockMvc.perform(post("/api/classroom/cancel")
+                        .header(HttpHeaders.AUTHORIZATION, getBearerTokenCustom(oauthClientDetails, studentId, studentPw))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaTypes.HAL_JSON)
+                        .param("id", String.valueOf(classroom.getId()))
+                        .param("name", classroom.getName()))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(header().exists(HttpHeaders.LOCATION))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE+";charset=UTF-8"))
+                .andExpect(jsonPath("id").exists())
+                .andExpect(jsonPath("name").value("병아리반1"))
+                .andExpect(jsonPath("teacher.name").exists())
+                .andExpect(jsonPath("members").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+                .andExpect(jsonPath("_links.cancel-classroom").exists())
+                .andDo(document("cancel-classroom",
+                        links(
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("cancel-classroom").description("link to cancel-classroom"),
+                                linkWithRel("profile").description("link to profile")
+                        ),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header"),
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("JWT token header")
+                        ),
+                        requestParameters(
+                                parameterWithName("id").description("Id of classroom"),
+                                parameterWithName("name").description("Name of classroom")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.LOCATION).description("location header"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
+                        ),
+                        responseFields(
+                                fieldWithPath("createdDate").description("CreatedDate of new classroom"),
+                                fieldWithPath("lastModifiedDate").description("LastModifiedDate of new classroom"),
+                                fieldWithPath("id").description("Id of new classroom"),
+                                fieldWithPath("name").description("Name of new classroom"),
+                                fieldWithPath("teacher.name").description("Name of teacher"),
+                                fieldWithPath("members").description("Members"),
+                                fieldWithPath("_links.self.href").description("link to self"),
+                                fieldWithPath("_links.cancel-classroom.href").description("link to cancel-classroom"),
+                                fieldWithPath("_links.profile.href").description("link to profile")
+                        )
+                ));
+    }
+
     private Map<String, Object> createAccount() {
         Map<String, Object> map = new HashMap<>();
 
@@ -345,6 +420,7 @@ class ClassroomControllerTest extends BaseTest {
         Classroom classroom = Classroom.builder()
                 .name("병아리반" + index)
                 .teacher(account)
+                .members(new ArrayList<>())
                 .build();
         return classroomService.saveClassroom(classroom);
     }

@@ -2,7 +2,6 @@ package com.classmanagement.modules.classroom;
 
 import com.classmanagement.infra.common.ErrorsResource;
 import com.classmanagement.modules.account.Account;
-import com.classmanagement.modules.account.AccountController;
 import com.classmanagement.modules.account.AccountService;
 import com.classmanagement.modules.account.Role;
 import com.classmanagement.modules.token.TokenEmail;
@@ -104,6 +103,36 @@ public class ClassroomController {
         ClassroomResource classroomResource = new ClassroomResource(saveClassroom);
         classroomResource.add(linkTo(ClassroomController.class).withRel("join-classroom"));
         classroomResource.add(new Link("/docs/classroom.html#resources-classroom-join").withRel("profile"));
+
+        WebMvcLinkBuilder selfLinkBuilder = linkTo(ClassroomController.class).slash(saveClassroom.getId());
+        URI createdUri = selfLinkBuilder.toUri();
+
+        return ResponseEntity.created(createdUri).body(classroomResource);
+    }
+
+    @PostMapping("/cancel") // 학생이 해당 학급 나가기
+    public ResponseEntity cancelClassroom(@RequestParam Long id, @RequestParam String name, @TokenEmail String currentUser) {
+        Account user = accountService.findAccount(currentUser).orElseThrow(() -> new UsernameNotFoundException(currentUser));
+        if (user.getRole() != Role.STUDENT) {
+            return ResponseEntity.badRequest().body("해당 사용자의 권한으로 접근할 수 없습니다.");
+        }
+
+        Optional<Classroom> optionalClassroom = classroomService.findClassroom(id, name);
+        if (optionalClassroom.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 id, name의 학급이 존재하지 않습니다.");
+        }
+        Classroom classroom = optionalClassroom.get();
+
+        if (!classroom.getMembers().contains(user)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 학급에 학생이 존재하지 않습니다.");
+        }
+
+        classroom.cancelMember(user);
+        Classroom saveClassroom = classroomService.saveClassroom(classroom);
+
+        ClassroomResource classroomResource = new ClassroomResource(saveClassroom);
+        classroomResource.add(linkTo(ClassroomController.class).withRel("cancel-classroom"));
+        classroomResource.add(new Link("/docs/classroom.html#resources-classroom-cancel").withRel("profile"));
 
         WebMvcLinkBuilder selfLinkBuilder = linkTo(ClassroomController.class).slash(saveClassroom.getId());
         URI createdUri = selfLinkBuilder.toUri();
