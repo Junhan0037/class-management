@@ -1,14 +1,15 @@
 package com.classmanagement.modules.oauth2;
 
+import com.classmanagement.modules.main.BaseTimeEntity;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
-@Getter @Setter
-public class OauthToken {
+@Getter @Setter @Builder
+@AllArgsConstructor @NoArgsConstructor
+public class OauthToken extends BaseTimeEntity {
 
     @Id @GeneratedValue
     private Long id;
@@ -25,8 +26,13 @@ public class OauthToken {
 
     private String scope;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonSerialize(using = OauthClientDetailsSerializer.class)
     private OauthClientDetails oauthClientDetails;
+
+    public void setOauthClientDetails(OauthClientDetails oauthClientDetails) {
+        this.oauthClientDetails = oauthClientDetails;
+        oauthClientDetails.getOauthToken().add(this);
+    }
 
 }

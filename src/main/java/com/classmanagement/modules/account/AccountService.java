@@ -46,9 +46,4 @@ public class AccountService implements UserDetailsService {
         return accountRepository.save(existingAccount);
     }
 
-//    public List<Account> showAccount() {
-//        List<Account> accounts = accountRepository.findAll();
-//        return accounts;
-//    }
-
 }

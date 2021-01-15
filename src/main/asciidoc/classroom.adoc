@@ -231,28 +231,35 @@ Content-Type: application/hal+json;charset=UTF-8
 }
 ----
 
-[[resources-accounts]]
-== 회원
+[[resources-classroom]]
+== 학급
 
-회원 리소스는 이벤트를 만들거나 조회할 때 사용한다.
+학급 리소스는 학급을 만들거나 조회할 때 사용한다.
 
-[[resources-accounts-list]]
-=== 회원 목록 조회
+[[resources-classroom-create]]
+=== 학급 생성
 
-`GET` 요청을 사용해서 서비스의 모든 회원을 조회할 수 있다. (`ADMIN` 권한만 가능)
+`POST` 요청을 사용해서 학급을 생성할 수 있다. (``ADMIN``, ``TEACHER`` 권한만 가능)
 
-operation::query-accounts[snippets='request-headers,curl-request,http-request,response-headers,response-fields,http-response,links']
+operation::create-classroom[snippets='request-headers,request-fields,curl-request,http-request,response-headers,response-fields,http-response,links']
 
-[[resources-accounts-get]]
-=== 회원 조회
+[[resources-classrooms-list]]
+=== 관리중인 학급 조회
 
-`Get` 요청을 사용해서 해당 'email'의 회원을 조회할 수 있다. (`/api/accounts/{email}`)
+`Get` 요청을 사용해서 관리중인 학급을 조회할 수 있다. (``TEACHER`` 권한만 가능)
 
-operation::query-account[snippets='request-headers,curl-request,http-request,response-headers,response-fields,http-response,links']
+operation::query-classrooms[snippets='request-headers,curl-request,http-request,response-headers,response-fields,http-response,links']
 
-[[resources-accounts-update]]
-=== 회원 수정
+[[resources-classroom-join]]
+=== 해당 학급 참여
 
-`PUT` 요청을 사용해서 기존 회원 정보를 수정할 수 있다. (`/api/accounts/{email}`)
+`POST` 요청을 사용해서 해당 학급에 참여할 수 있다. (``STUDENT`` 권한만 가능)
 
-operation::update-account[snippets='request-headers,request-fields,curl-request,http-request,response-headers,response-fields,http-response,links']
+operation::join-classroom[snippets='request-headers,request-parameters,curl-request,http-request,response-headers,response-fields,http-response,links']
+
+[[resources-classroom-cancel]]
+=== 해당 학급에서 나가기
+
+`POST` 요청을 사용해서 학생이 해당 학급에서 나갈 수 있다. (``STUDENT`` 권한만 가능)
+
+operation::cancel-classroom[snippets='request-headers,request-parameters,curl-request,http-request,response-headers,response-fields,http-response,links']

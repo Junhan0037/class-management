@@ -1,6 +1,5 @@
 package com.classmanagement.modules.oauth2;
 
-import com.classmanagement.infra.common.AppProperties;
 import com.google.gson.Gson;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +8,10 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 @RequiredArgsConstructor

@@ -91,7 +91,7 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("password").description("Password of new account"),
                                 fieldWithPath("name").description("Name of new account"),
                                 fieldWithPath("role").description("Role of new account"),
-                                fieldWithPath("classroom").description("Classroom of new account"),
+                                fieldWithPath("job").description("Job of new account"),
                                 fieldWithPath("oauthClientDetails.REST_API_KEY").description("Id of OauthClient"),
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.create-account.href").description("link to query-accounts"),
@@ -107,7 +107,7 @@ class AccountControllerTest extends BaseTest {
                 .email(appProperties.getTestUsername())
                 .password(appProperties.getTestPassword())
                 .name("홍길동")
-                .role(Role.USER)
+                .role(Role.STUDENT)
                 .id(123l) // 받을 수 없는 입력값
                 .build();
 
@@ -141,7 +141,7 @@ class AccountControllerTest extends BaseTest {
                 .password(appProperties.getTestPassword())
                 .passwordConfirm("skjdiwhduadas")
                 .name("홍길동")
-                .role(Role.USER)
+                .role(Role.STUDENT)
                 .build();
 
         mockMvc.perform(post("/api/accounts")
@@ -203,7 +203,7 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("_embedded.accountList[0].password").description("Password of new account"),
                                 fieldWithPath("_embedded.accountList[0].name").description("Name of new account"),
                                 fieldWithPath("_embedded.accountList[0].role").description("Role of new account"),
-                                fieldWithPath("_embedded.accountList[0].classroom").description("Classroom of new account"),
+                                fieldWithPath("_embedded.accountList[0].job").description("Job of new account"),
                                 fieldWithPath("_embedded.accountList[0].oauthClientDetails.REST_API_KEY").description("Id of OauthClient"),
                                 fieldWithPath("_embedded.accountList[0]._links.self.href").description("link to self"),
                                 fieldWithPath("_links.self.href").description("link to self"),
@@ -262,7 +262,7 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("password").description("Password of new account"),
                                 fieldWithPath("name").description("Name of new account"),
                                 fieldWithPath("role").description("Role of new account"),
-                                fieldWithPath("classroom").description("Classroom of new account"),
+                                fieldWithPath("job").description("Job of new account"),
                                 fieldWithPath("oauthClientDetails.REST_API_KEY").description("Id of OauthClient"),
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.query-account.href").description("link to query-account"),
@@ -318,11 +318,11 @@ class AccountControllerTest extends BaseTest {
                 .password(appProperties.getTestPassword())
                 .name("홍길동")
                 .role(Role.ADMIN)
+                .job(Job.PUBLIC)
                 .build();
 
         AccountUpdateDto accountUpdateDto = modelMapper.map(account, AccountUpdateDto.class);
-        String newName = "김삿갓";
-        accountUpdateDto.setName(newName);
+        accountUpdateDto.setJob(Job.BANK);
 
         mockMvc.perform(put("/api/accounts/{email}", appProperties.getTestUsername())
                         .header(HttpHeaders.AUTHORIZATION, getBearerToken())
@@ -331,7 +331,8 @@ class AccountControllerTest extends BaseTest {
                         .content(objectMapper.writeValueAsString(accountUpdateDto)))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("name").value(newName))
+                .andExpect(jsonPath("name").exists())
+                .andExpect(jsonPath("job").value(Job.BANK.name()))
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.profile").exists())
                 .andExpect(jsonPath("_links.update-account").exists())
@@ -347,7 +348,7 @@ class AccountControllerTest extends BaseTest {
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("JWT token header")
                         ),
                         requestFields(
-                                fieldWithPath("name").description("Name of new account")
+                                fieldWithPath("job").description("직업")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.LOCATION).description("location header"),
@@ -361,7 +362,7 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("password").description("Password of new account"),
                                 fieldWithPath("name").description("Name of new account"),
                                 fieldWithPath("role").description("Role of new account"),
-                                fieldWithPath("classroom").description("Classroom of new account"),
+                                fieldWithPath("job").description("Job of new account"),
                                 fieldWithPath("oauthClientDetails.REST_API_KEY").description("Id of OauthClient"),
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.update-account.href").description("link to update-account"),
@@ -397,8 +398,7 @@ class AccountControllerTest extends BaseTest {
                 .build();
 
         AccountUpdateDto accountUpdateDto = modelMapper.map(account, AccountUpdateDto.class);
-        String newName = "김삿갓";
-        accountUpdateDto.setName(newName);
+        accountUpdateDto.setJob(Job.BANK);
 
         mockMvc.perform(put("/api/accounts/abc@abc.com")
                         .header(HttpHeaders.AUTHORIZATION, getBearerToken())
@@ -446,6 +446,7 @@ class AccountControllerTest extends BaseTest {
                                 .password(appProperties.getTestPassword() + index)
                                 .name("홍길동" + index)
                                 .role(Role.ADMIN)
+                                .job(Job.PUBLIC)
                                 .build();
         OauthClientDetails oauthClientDetails = oauthClientDetailsService.createOauthClientDetails();
         account.setOauthClientDetails(oauthClientDetails);
