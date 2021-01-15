@@ -79,7 +79,7 @@ public class AccountController {
         return ResponseEntity.created(createdUri).body(pagedResources);
     }
 
-    @GetMapping("{email}") // 회원 단건 조회 (TODO 선생님용 회원 단건 조회 개발 필요!)
+    @GetMapping("{email}") // 회원 단건 조회
     public ResponseEntity getAccount(@PathVariable String email, @TokenEmail String currentUser) {
         Optional<Account> optionalAccount = accountService.findAccount(email);
         if (optionalAccount.isEmpty()) {
@@ -88,7 +88,7 @@ public class AccountController {
         Account findAccount = optionalAccount.get();
 
         Account user = accountService.findAccount(currentUser).orElseThrow(() -> new UsernameNotFoundException(currentUser));
-        if (user.getRole() != Role.ADMIN && !user.getEmail().equals(findAccount.getEmail())) {
+        if (user.getRole() == Role.STUDENT && !user.getEmail().equals(findAccount.getEmail())) {
             return ResponseEntity.badRequest().body("해당 사용자의 권한으로 접근할 수 없습니다.");
         }
 
