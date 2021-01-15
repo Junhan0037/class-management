@@ -322,8 +322,7 @@ class AccountControllerTest extends BaseTest {
                 .build();
 
         AccountUpdateDto accountUpdateDto = modelMapper.map(account, AccountUpdateDto.class);
-        String newName = "김삿갓";
-        accountUpdateDto.setName(newName);
+        accountUpdateDto.setJob(Job.BANK);
 
         mockMvc.perform(put("/api/accounts/{email}", appProperties.getTestUsername())
                         .header(HttpHeaders.AUTHORIZATION, getBearerToken())
@@ -332,7 +331,8 @@ class AccountControllerTest extends BaseTest {
                         .content(objectMapper.writeValueAsString(accountUpdateDto)))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("name").value(newName))
+                .andExpect(jsonPath("name").exists())
+                .andExpect(jsonPath("job").value(Job.BANK.name()))
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.profile").exists())
                 .andExpect(jsonPath("_links.update-account").exists())
@@ -348,7 +348,7 @@ class AccountControllerTest extends BaseTest {
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("JWT token header")
                         ),
                         requestFields(
-                                fieldWithPath("name").description("새로운 이름")
+                                fieldWithPath("job").description("직업")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.LOCATION).description("location header"),
@@ -398,8 +398,7 @@ class AccountControllerTest extends BaseTest {
                 .build();
 
         AccountUpdateDto accountUpdateDto = modelMapper.map(account, AccountUpdateDto.class);
-        String newName = "김삿갓";
-        accountUpdateDto.setName(newName);
+        accountUpdateDto.setJob(Job.BANK);
 
         mockMvc.perform(put("/api/accounts/abc@abc.com")
                         .header(HttpHeaders.AUTHORIZATION, getBearerToken())

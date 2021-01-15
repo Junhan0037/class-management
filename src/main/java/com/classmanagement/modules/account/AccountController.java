@@ -102,7 +102,7 @@ public class AccountController {
         return ResponseEntity.created(createdUri).body(accountResource);
     }
 
-    @PutMapping("{email}") // 회원 수정 (TODO 현재는 이름만 수정 가능!)
+    @PutMapping("{email}") // 회원 수정 (선생님이 학생의 직업 수정)
     public ResponseEntity updateAccount(@RequestBody @Valid AccountUpdateDto accountUpdateDto, Errors errors, @PathVariable String email, @TokenEmail String currentUser) {
         if (errors.hasErrors()) { // 입력값이 비어있는 경우
             return badRequest(errors);
@@ -112,10 +112,10 @@ public class AccountController {
         if (optionalAccount.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 email의 회원 정보가 없습니다.");
         }
-
         Account existingAccount = optionalAccount.get();
+
         Account user = accountService.findAccount(currentUser).orElseThrow(() -> new UsernameNotFoundException(currentUser));
-        if (user.getRole() != Role.ADMIN && user.getRole() != existingAccount.getRole()) {
+        if (user.getRole() == Role.STUDENT) {
             return ResponseEntity.badRequest().body("해당 사용자의 권한으로 접근할 수 없습니다.");
         }
 
