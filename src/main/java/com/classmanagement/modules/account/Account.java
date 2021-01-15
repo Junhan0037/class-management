@@ -30,6 +30,9 @@ public class Account extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    private Job job = Job.PUBLIC;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JsonSerialize(using = OauthClientDetailsSerializer.class)
     private OauthClientDetails oauthClientDetails;
