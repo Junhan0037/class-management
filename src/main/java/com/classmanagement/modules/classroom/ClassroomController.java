@@ -73,7 +73,7 @@ public class ClassroomController {
             return ResponseEntity.badRequest().body("해당 사용자의 권한으로 접근할 수 없습니다.");
         }
 
-        Page<Classroom> classroomByAccount = classroomService.findClassroomByAccount(user, pageable); // 2번 방법
+        Page<Classroom> classroomByAccount = classroomService.findClassroomByAccount(user, pageable);
         var pagedResources = assembler.toModel(classroomByAccount, e -> new ClassroomResource(e));
         pagedResources.add(new Link("/docs/classroom.html#resources-classrooms-list").withRel("profile"));
         pagedResources.add(linkTo(ClassroomController.class).withRel("query-classrooms"));

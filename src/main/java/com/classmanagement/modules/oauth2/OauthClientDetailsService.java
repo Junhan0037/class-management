@@ -16,16 +16,16 @@ public class OauthClientDetailsService {
     public OauthClientDetails createOauthClientDetails() {
         String password = UUID.randomUUID().toString();
         OauthClientDetails oauthClientDetails = OauthClientDetails.builder()
-                .clientSecret(passwordEncoder.encode(password))
-                .nonPasswordEncoder(password)
-                .scope("read,write")
-                .autoapprove("read,write")
-                .authorizedGrantTypes("authorization_code,refresh_token")
-                .authorities("ROLE_USER")
-                .accessTokenValidity(24 * 60 * 60)
-                .refreshTokenValidity(30 * 24 * 60 * 60)
-                .webServerRedirectUri("http://localhost:8080/oauth2")
-                .build();
+                                                                .clientSecret(passwordEncoder.encode(password))
+                                                                .nonPasswordEncoder(password)
+                                                                .scope("read,write")
+                                                                .autoapprove("read,write")
+                                                                .authorizedGrantTypes("authorization_code,refresh_token")
+                                                                .authorities("ROLE_USER")
+                                                                .accessTokenValidity(24 * 60 * 60)
+                                                                .refreshTokenValidity(30 * 24 * 60 * 60)
+                                                                .webServerRedirectUri("http://localhost:8080/oauth2")
+                                                                .build();
         return oauthClientDetailsRepository.save(oauthClientDetails);
     }
 
