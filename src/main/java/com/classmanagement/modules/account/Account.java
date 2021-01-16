@@ -27,6 +27,8 @@ public class Account extends BaseTimeEntity {
 
     private String name;
 
+    private Integer money = 0;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 

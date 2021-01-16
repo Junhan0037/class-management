@@ -90,6 +90,7 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("email").description("Email of new account"),
                                 fieldWithPath("password").description("Password of new account"),
                                 fieldWithPath("name").description("Name of new account"),
+                                fieldWithPath("money").description("Money of new account"),
                                 fieldWithPath("role").description("Role of new account"),
                                 fieldWithPath("job").description("Job of new account"),
                                 fieldWithPath("oauthClientDetails.REST_API_KEY").description("Id of OauthClient"),
@@ -202,6 +203,7 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("_embedded.accountList[0].email").description("Email of new account"),
                                 fieldWithPath("_embedded.accountList[0].password").description("Password of new account"),
                                 fieldWithPath("_embedded.accountList[0].name").description("Name of new account"),
+                                fieldWithPath("_embedded.accountList[0].money").description("Money of new account"),
                                 fieldWithPath("_embedded.accountList[0].role").description("Role of new account"),
                                 fieldWithPath("_embedded.accountList[0].job").description("Job of new account"),
                                 fieldWithPath("_embedded.accountList[0].oauthClientDetails.REST_API_KEY").description("Id of OauthClient"),
@@ -261,6 +263,7 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("email").description("Email of new account"),
                                 fieldWithPath("password").description("Password of new account"),
                                 fieldWithPath("name").description("Name of new account"),
+                                fieldWithPath("money").description("Money of new account"),
                                 fieldWithPath("role").description("Role of new account"),
                                 fieldWithPath("job").description("Job of new account"),
                                 fieldWithPath("oauthClientDetails.REST_API_KEY").description("Id of OauthClient"),
@@ -317,6 +320,7 @@ class AccountControllerTest extends BaseTest {
                 .email(appProperties.getTestUsername())
                 .password(appProperties.getTestPassword())
                 .name("홍길동")
+                .money(0)
                 .role(Role.ADMIN)
                 .job(Job.PUBLIC)
                 .build();
@@ -361,6 +365,7 @@ class AccountControllerTest extends BaseTest {
                                 fieldWithPath("email").description("Email of new account"),
                                 fieldWithPath("password").description("Password of new account"),
                                 fieldWithPath("name").description("Name of new account"),
+                                fieldWithPath("money").description("Money of new account"),
                                 fieldWithPath("role").description("Role of new account"),
                                 fieldWithPath("job").description("Job of new account"),
                                 fieldWithPath("oauthClientDetails.REST_API_KEY").description("Id of OauthClient"),
@@ -445,6 +450,7 @@ class AccountControllerTest extends BaseTest {
                                 .email(appProperties.getTestUsername() + index)
                                 .password(appProperties.getTestPassword() + index)
                                 .name("홍길동" + index)
+                                .money(0)
                                 .role(Role.ADMIN)
                                 .job(Job.PUBLIC)
                                 .build();
