@@ -4,6 +4,7 @@ import com.classmanagement.infra.common.ErrorsResource;
 import com.classmanagement.modules.account.Account;
 import com.classmanagement.modules.account.AccountService;
 import com.classmanagement.modules.account.Job;
+import com.classmanagement.modules.account.Role;
 import com.classmanagement.modules.classroom.Classroom;
 import com.classmanagement.modules.classroom.ClassroomController;
 import com.classmanagement.modules.classroom.ClassroomService;
@@ -30,12 +31,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 public class GovernmentController {
 
     private final AccountService accountService;
-    private final ClassroomService classroomService;
 
     @GetMapping("/money") // 자신이 속한 학급 자산 통계
     public ResponseEntity createClassroom(@TokenEmail String currentUser) {
         Account user = accountService.findAccount(currentUser).orElseThrow(() -> new UsernameNotFoundException(currentUser));
-        if (user.getJob() != Job.GOVERNMENT) {
+        if (user.getJob() != Job.GOVERNMENT && user.getRole() != Role.TEACHER) {
             return ResponseEntity.badRequest().body("해당 사용자의 권한으로 접근할 수 없습니다.");
         }
         Classroom classroom = user.getClassroom(); // 학생이 속한 학급

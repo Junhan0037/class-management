@@ -1,6 +1,5 @@
 package com.classmanagement.infra.config;
 
-import com.classmanagement.infra.common.AppProperties;
 import com.classmanagement.modules.account.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +23,6 @@ public class OauthServerConfig extends AuthorizationServerConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final AccountService accountService;
-    private final AppProperties appProperties;
     private final JwtAccessTokenConverter jwtAccessTokenConverter;
     private final TokenStore tokenStore;
     private final DataSource dataSource;
@@ -37,15 +35,6 @@ public class OauthServerConfig extends AuthorizationServerConfigurerAdapter {
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.jdbc(dataSource).passwordEncoder(passwordEncoder);
-//        clients.jdbc(dataSource)
-//                .withClient(appProperties.getClientId())
-//                .secret(passwordEncoder.encode(appProperties.getClientSecret()))
-//                .redirectUris("http://localhost:8080/oauth2/callback")
-//                .authorizedGrantTypes("authorization_code", "refresh_token")
-//                .scopes("read", "write")
-//                .autoApprove(true)
-//                .accessTokenValiditySeconds(24 * 60 * 60)
-//                .refreshTokenValiditySeconds(30 * 24 * 60 * 60);
     }
 
     @Override

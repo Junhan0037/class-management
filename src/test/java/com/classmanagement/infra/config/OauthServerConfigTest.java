@@ -5,6 +5,7 @@ import com.classmanagement.modules.account.AccountDto;
 import com.classmanagement.modules.account.AccountRepository;
 import com.classmanagement.modules.account.AccountService;
 import com.classmanagement.modules.account.Role;
+import com.classmanagement.modules.classroom.ClassroomRepository;
 import com.classmanagement.modules.common.BaseTest;
 import com.classmanagement.modules.oauth2.OauthClientDetails;
 import com.classmanagement.modules.oauth2.OauthClientDetailsRepository;
@@ -32,9 +33,11 @@ class OauthServerConfigTest extends BaseTest {
     @Autowired AccountRepository accountRepository;
     @Autowired PasswordEncoder passwordEncoder;
     @Autowired OauthClientDetailsRepository oauthClientDetailsRepository;
+    @Autowired ClassroomRepository classroomRepository;
     
     @BeforeEach
     public void setup() {
+        classroomRepository.deleteAll();
         accountRepository.deleteAll();
     }
     
