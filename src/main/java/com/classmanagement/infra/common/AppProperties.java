@@ -33,5 +33,5 @@ public class AppProperties {
 
     @NotEmpty
     private String signKey;
-
+    
 }

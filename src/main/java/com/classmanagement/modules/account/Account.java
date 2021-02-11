@@ -23,9 +23,12 @@ public class Account extends BaseTimeEntity {
     @Column(unique = true)
     private String email;
 
+    @JsonIgnore
     private String password;
 
     private String name;
+
+    private Integer money = 0;
 
     @Enumerated(EnumType.STRING)
     private Role role;

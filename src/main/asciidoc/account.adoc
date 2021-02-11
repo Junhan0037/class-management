@@ -122,11 +122,21 @@ Parameter
 
 |`+redirect_uri+`
 |`+String+`
-|인가 코드가 리다이렉트될 URI
+|인가 코드가 리다이렉트될 URI (http://localhost:8080/oauth2)
 
 |`+response_type+`
 |`+String+`
 |code로 고정
+
+|===
+
+Authorization
+
+|===
+|Username|Password
+
+|`+email+`
+|`+password+`
 
 |===
 
