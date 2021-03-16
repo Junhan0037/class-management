@@ -3,7 +3,7 @@
 ![Java_11](https://img.shields.io/badge/java-v11-red?logo=java)
 ![Spring_Boot](https://img.shields.io/badge/Spring_Boot-v2.4.1-green.svg?logo=spring)
 
-학급경영 웹 애플리케이션
+학급경영 웹 애플리케이션 ([Moneyclass 통계청 기술문서](https://www.notion.so/hyeonproject/4f85ef9bcfd84e3b90e5b62e5687a1d9))
 
 ## 개발환경
 
